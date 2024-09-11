@@ -1,0 +1,39 @@
+<div class="dashboard-container">
+    <div class="add-ask">
+        @if (shouldRenderCreateTask) {
+        <app-create-task (onCloseBtnClick)="closeAddTask($event)"></app-create-task>
+        }@else {
+        <button class="btn btn-primary" (click)="openAddTask()">Add Task</button>
+        }
+    </div>
+    <div class="row row-cols-1 row-cols-md-3 g-4 mx-2 pb-4">
+        @for (item of taskList; track $index) {
+        <div class="col">
+            <div class="card">
+
+                <div class="card-body">
+                    <h5 class="card-title"> {{item.title}} </h5>
+                    <p class="card-text">
+                        <strong>Assigned to -</strong> {{item.assignedTo}}
+                    </p>
+                    <p class="card-text">
+                        <strong>Priority -</strong>{{item.priority}}
+                    </p>
+                    <p class="card-text">
+                        <strong>Status -</strong>{{item.status}}
+                    </p>
+                    <p class="card-text">
+                        <strong>Description -</strong>{{item.description}}
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <p class="card-text">
+                        <strong>Created At -</strong>{{item.createdAt|date:'shortDate'}}
+                    </p>
+                </div>
+            </div>
+        </div>
+        }
+
+    </div>
+</div>

@@ -1,0 +1,60 @@
+<form class="row g-3" [formGroup]="taskForm" (submit)="handleSubmit()">
+    <div class="col-md-4">
+        <label for="validationServer01" class="form-label">Title</label>
+        <input type="text" formControlName="title" class="form-control is-valid" id="validationServer01" value="Mark">
+        <div class="valid-feedback">
+            Looks good!
+        </div>
+    </div>
+    <div class="col-md-4">
+        <label for="validationServer02" class="form-label">Assigned To</label>
+        <input formControlName="assignedTo" type="text" class="form-control is-valid" id="validationServer02"
+            value="Otto">
+        <div class="valid-feedback">
+            Looks good!
+        </div>
+    </div>
+    <div class="col-md-4">
+        <label for="validationServerUsername" class="form-label">Created At</label>
+        <input formControlName="createdAt" type="date" class="form-control is-valid" id="validationServer02"
+            value="Otto">
+        <div class="valid-feedback">
+            Looks good!
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label for="validationServerUsername" class="form-label">Priority</label>
+        <select formControlName="priority" class="form-select is-valid" aria-label="Default select example">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Critical">Critical</option>
+        </select>
+        <div id="validationServer04Feedback" class="valid-feedback">
+            Please select a valid state.
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label for="validationServer04" class="form-label">Status</label>
+        <select formControlName="status" class="form-select is-invalid" id="validationServer04"
+            aria-describedby="validationServer04Feedback">
+            <option value="Open">Open
+            </option>
+            <option value="Started">Started
+            </option>
+            <option value="In Progress">In Progress
+            </option>
+        </select>
+        <div id="validationServer04Feedback" class="invalid-feedback">
+            Please select a valid state.
+        </div>
+    </div>
+    <div class="col-md-12">
+        <label for="validationServer05" class="form-label">Description</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="description"
+            rows="3"></textarea>
+    </div>
+    <div class="col-12">
+        <button class="btn btn-primary" [disabled]="taskForm.invalid" type="submit">Submit form</button>
+    </div>
+</form>

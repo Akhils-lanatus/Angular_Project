@@ -1,0 +1,16 @@
+.nav-container {
+  background-color: #232323;
+  color: white;
+}
+.nav-container ul {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding: 1rem;
+  gap: 2rem;
+  list-style-type: none;
+}
+.nav-container ul li {
+  cursor: pointer;
+  font-size: larger;
+}
