@@ -1,26 +1,39 @@
 <form class="row g-3" [formGroup]="taskForm" (submit)="handleSubmit()">
     <div class="col-md-4">
         <label for="validationServer01" class="form-label">Title</label>
-        <input type="text" formControlName="title" class="form-control is-valid" id="validationServer01" value="Mark">
-        <div class="valid-feedback">
-            Looks good!
+        <input type="text" formControlName="title" [class]="{
+                'is-invalid':shouldShowError('title'),
+                'is-valid':!shouldShowError('title'),
+                'form-control':true
+            }" id="validationServer01" value="Mark">
+        @if (shouldShowError('title')) {
+        <div>
+            <small class="text-danger">
+                {{ getError("title", "Task title") }}
+            </small>
         </div>
+        }
     </div>
     <div class="col-md-4">
         <label for="validationServer02" class="form-label">Assigned To</label>
-        <input formControlName="assignedTo" type="text" class="form-control is-valid" id="validationServer02"
-            value="Otto">
-        <div class="valid-feedback">
-            Looks good!
+        <input formControlName="assignedTo" type="text" [class]="{
+                'is-invalid':shouldShowError('assignedTo'),
+                'is-valid':!shouldShowError('assignedTo'),
+                'form-control':true
+            }" id="validationServer02" value="Otto">
+        @if (shouldShowError('assignedTo')) {
+        <div>
+            <small class="text-danger">
+                {{ getError("assignedTo", "Assigned To") }}
+            </small>
         </div>
+        }
     </div>
     <div class="col-md-4">
         <label for="validationServerUsername" class="form-label">Created At</label>
-        <input formControlName="createdAt" type="date" class="form-control is-valid" id="validationServer02"
+        <input formControlName="createdAt" type="date" class="form-select is-valid" id="validationServer02"
             value="Otto">
-        <div class="valid-feedback">
-            Looks good!
-        </div>
+
     </div>
     <div class="col-md-6">
         <label for="validationServerUsername" class="form-label">Priority</label>
@@ -30,13 +43,11 @@
             <option value="High">High</option>
             <option value="Critical">Critical</option>
         </select>
-        <div id="validationServer04Feedback" class="valid-feedback">
-            Please select a valid state.
-        </div>
+
     </div>
     <div class="col-md-6">
         <label for="validationServer04" class="form-label">Status</label>
-        <select formControlName="status" class="form-select is-invalid" id="validationServer04"
+        <select formControlName="status" class="form-select is-valid" id="validationServer04"
             aria-describedby="validationServer04Feedback">
             <option value="Open">Open
             </option>
@@ -45,14 +56,22 @@
             <option value="In Progress">In Progress
             </option>
         </select>
-        <div id="validationServer04Feedback" class="invalid-feedback">
-            Please select a valid state.
-        </div>
+
     </div>
     <div class="col-md-12">
         <label for="validationServer05" class="form-label">Description</label>
-        <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="description"
-            rows="3"></textarea>
+        <textarea [class]="{
+                'is-invalid':shouldShowError('description'),
+                'is-valid':!shouldShowError('description'),
+                'form-control':true
+            }" id="exampleFormControlTextarea1" formControlName="description" rows="3"></textarea>
+        @if (shouldShowError('description')) {
+        <div>
+            <small class="text-danger">
+                {{ getError("description", "Description") }}
+            </small>
+        </div>
+        }
     </div>
     <div class="col-12">
         <button class="btn btn-primary" [disabled]="taskForm.invalid" type="submit">Submit form</button>
