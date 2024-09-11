@@ -1,3 +1,7 @@
+@if(shouldRenderAlert){
+<app-custom-response-alert (onHideAlertClick)="hideResponseAlert()" [alertTitle]="'Success'"
+    [alertMessage]="successResponseMessage"></app-custom-response-alert>
+}
 <div class="dashboard-container">
     <div class="add-ask">
         @if (shouldRenderCreateTask) {
