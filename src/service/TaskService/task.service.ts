@@ -31,7 +31,6 @@ export class TaskService {
   }
   updateTask(data: ITask): Observable<ITaskSuccessResponse> {
     this.isLoadingSubject.next(true);
-    console.log(data);
 
     return this.httpClient
       .patch<ITaskSuccessResponse>(

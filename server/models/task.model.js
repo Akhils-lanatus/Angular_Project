@@ -13,10 +13,9 @@ const TaskSchema = new Schema(
       type: String,
       required: true,
     },
-    createdAt: {
+    taskCreatedAT: {
       type: Date,
       required: true,
-      default: Date.now,
     },
     priority: {
       type: String,

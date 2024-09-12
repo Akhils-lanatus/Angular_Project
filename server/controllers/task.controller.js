@@ -3,12 +3,12 @@ import { TaskModel } from "../models/task.model.js";
 import mongoose from "mongoose";
 export const postTaskController = async (req, res) => {
   try {
-    const { title, description, assignedTo, createdAt, priority, status } =
+    const { title, description, assignedTo, taskCreatedAT, priority, status } =
       req.body;
     const response = await TaskModel.create({
       title,
       description,
-      createdAt: new Date(createdAt),
+      taskCreatedAT: new Date(taskCreatedAT),
       assignedTo,
       priority,
       status,
@@ -64,17 +64,16 @@ export const deleteTaskController = async (req, res) => {
 };
 export const updateTaskController = async (req, res) => {
   try {
-    const { title, description, assignedTo, createdAt, priority, status } =
+    const { title, description, assignedTo, taskCreatedAT, priority, status } =
       req.body;
     const { id } = req.params;
-
+    const newDate = new Date(taskCreatedAT);
     const response = await TaskModel.findByIdAndUpdate(id, {
       title,
       description,
       assignedTo,
-      createdAt: new Date(createdAt),
       priority,
-      status,
+      taskCreatedAT: newDate,
     });
 
     if (response) {

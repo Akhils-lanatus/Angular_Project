@@ -25,17 +25,17 @@ import { TaskService } from '../../service/TaskService/task.service';
   styleUrl: './create-task.component.css',
 })
 export class CreateTaskComponent implements OnInit, OnDestroy {
-  @Output() onCloseBtnClick: EventEmitter<ITaskSuccessResponse> =
-    new EventEmitter<ITaskSuccessResponse>();
+  @Output() handleFormSubmit: EventEmitter<ITask> = new EventEmitter<ITask>();
   errorService: FormErrorService = inject(FormErrorService);
   taskService: TaskService = inject(TaskService);
   @Input() updateDataValue!: ITask;
+  @Input() isUpdateState: boolean = false;
 
   taskForm: FormGroup = new FormGroup({
     title: new FormControl('', [Validators.required, Validators.maxLength(20)]),
     description: new FormControl('', Validators.required),
     assignedTo: new FormControl('', Validators.required),
-    createdAt: new FormControl(formatDate(new Date(), 'yyyy-MM-dd', 'en')),
+    taskCreatedAT: new FormControl(formatDate(new Date(), 'yyyy-MM-dd', 'en')),
     priority: new FormControl('Low'),
     status: new FormControl('Open'),
   });
@@ -45,17 +45,15 @@ export class CreateTaskComponent implements OnInit, OnDestroy {
     return this.errorService.shouldShowError(control);
   }
 
-  isUpdateState: boolean = false;
   isLoading: boolean = false;
 
   ngOnInit(): void {
-    if (Boolean(this.updateDataValue.title)) {
-      this.isUpdateState = true;
+    if (this.isUpdateState) {
       this.taskForm.patchValue(this.updateDataValue);
       this.taskForm
-        .get('createdAt')
+        .get('taskCreatedAT')
         ?.patchValue(
-          formatDate(this.updateDataValue.createdAt, 'yyyy-MM-dd', 'en')
+          formatDate(this.updateDataValue.taskCreatedAT, 'yyyy-MM-dd', 'en')
         );
     }
     this.taskService.isLoading$.subscribe(
@@ -69,21 +67,8 @@ export class CreateTaskComponent implements OnInit, OnDestroy {
   }
 
   handleSubmit() {
-    if (this.isUpdateState) {
-      let _id = this.updateDataValue._id;
-      const payload = { ...this.taskForm.value, _id };
-      this.taskService.updateTask(payload).subscribe({
-        next: (res: ITaskSuccessResponse) => {
-          this.onCloseBtnClick.emit(res);
-        },
-      });
-    } else {
-      this.taskService.postTask(this.taskForm.value).subscribe({
-        next: (res: ITaskSuccessResponse) => {
-          this.onCloseBtnClick.emit(res);
-        },
-      });
-    }
+    const payload = { ...this.taskForm.value };
+    this.handleFormSubmit.emit(payload);
   }
 
   ngOnDestroy(): void {
@@ -91,7 +76,7 @@ export class CreateTaskComponent implements OnInit, OnDestroy {
     this.updateDataValue = {
       title: '',
       assignedTo: '',
-      createdAt: new Date(),
+      taskCreatedAT: new Date(),
       description: '',
       priority: 'Low',
       status: 'Open',

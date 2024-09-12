@@ -15,6 +15,7 @@ import { CustomResponseAlert } from '../../shared/CustomAlert/custom-alert.compo
 export class DashboardComponent implements OnInit {
   tasks: ITask[] = [];
   isLoading: boolean = false;
+  isUpdateState: boolean = false;
   ngOnInit(): void {
     this.taskService.fetchAllTasks().subscribe((x) => (this.tasks = x));
     this.taskService.isLoading$.subscribe(
@@ -24,7 +25,7 @@ export class DashboardComponent implements OnInit {
   updateDataValue: ITask = {
     title: '',
     assignedTo: '',
-    createdAt: new Date(),
+    taskCreatedAT: new Date(),
     description: '',
     priority: 'Low',
     status: 'Open',
@@ -35,14 +36,18 @@ export class DashboardComponent implements OnInit {
   successResponseMessage: string = '';
 
   constructor(private taskService: TaskService) {}
+
+  //OPEN TASK FORM
   openAddTask() {
     this.shouldRenderCreateTask = true;
+    this.isUpdateState = false;
   }
-
+  //CLOSE TASK FORM
   closeAddTask(data: ITaskSuccessResponse) {
     this.successResponseMessage = data.message || '';
     this.shouldRenderCreateTask = false;
     this.shouldRenderAlert = true;
+    this.isUpdateState = false;
     this.taskService.fetchAllTasks().subscribe((x) => (this.tasks = x));
   }
 
@@ -71,9 +76,28 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  //CREATE || UPDATE TASK
+  handleFormSubmit(payload: ITask) {
+    if (this.isUpdateState) {
+      const updatedPayload = { ...payload, _id: this.updateDataValue._id };
+      this.taskService.updateTask(updatedPayload).subscribe({
+        next: (res: ITaskSuccessResponse) => {
+          this.closeAddTask(res);
+        },
+      });
+    } else {
+      this.taskService.postTask(payload).subscribe({
+        next: (res: ITaskSuccessResponse) => {
+          this.closeAddTask(res);
+        },
+      });
+    }
+  }
+
   updateTask(data: ITask) {
     this.shouldRenderCreateTask = true;
     this.updateDataValue = data;
+    this.isUpdateState = true;
   }
   deleteAllTasks() {
     //TODO: delete all tasks same like deleteTask , only mongoose method changes
