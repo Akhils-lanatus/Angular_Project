@@ -1,5 +1,6 @@
 import { errorHandler } from "../utils/errorHandler.js";
 import { TaskModel } from "../models/task.model.js";
+import mongoose from "mongoose";
 export const postTaskController = async (req, res) => {
   try {
     const { title, description, assignedTo, createdAt, priority, status } =
@@ -19,8 +20,6 @@ export const postTaskController = async (req, res) => {
         message: "Task created successfully",
       });
     }
-
-    console.log(title, description, assignedTo, createdAt, priority, status);
   } catch (error) {
     const message = errorHandler(error) || "Internal server error";
     return res.status(400).json({
@@ -61,5 +60,35 @@ export const deleteTaskController = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+  }
+};
+export const updateTaskController = async (req, res) => {
+  try {
+    const { title, description, assignedTo, createdAt, priority, status } =
+      req.body;
+    const { id } = req.params;
+
+    const response = await TaskModel.findByIdAndUpdate(id, {
+      title,
+      description,
+      assignedTo,
+      createdAt: new Date(createdAt),
+      priority,
+      status,
+    });
+
+    if (response) {
+      return res.status(200).json({
+        success: true,
+        response,
+        message: "Task Updated successfully",
+      });
+    }
+  } catch (error) {
+    const message = errorHandler(error) || "Internal server error";
+    return res.status(400).json({
+      success: false,
+      message,
+    });
   }
 };

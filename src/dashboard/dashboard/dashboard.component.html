@@ -10,7 +10,7 @@
     }
     <div class="add-ask">
         @if (shouldRenderCreateTask) {
-        <app-create-task (onCloseBtnClick)="closeAddTask($event)"></app-create-task>
+        <app-create-task [updateDataValue]="updateDataValue" (onCloseBtnClick)="closeAddTask($event)"></app-create-task>
         }@else {
         <button class="btn btn-primary" [disabled]="isLoading" (click)="openAddTask()">Add Task</button>
         }
@@ -19,6 +19,7 @@
         }
 
     </div>
+    @if(!shouldRenderCreateTask){
     <div class="row row-cols-1 row-cols-md-3 g-4 mx-2 pb-4">
         @for (item of tasks; track $index) {
         <div class="col">
@@ -44,6 +45,7 @@
                     <p class="card-text">
                         <strong>Created At -</strong>{{item.createdAt|date:'shortDate'}}
                     </p>
+                    <button (click)="updateTask(item)" class="btn btn-danger btn-sm">📝</button>
                     <button (click)="deleteTask(item._id)" class="btn btn-danger btn-sm">🗑️</button>
                 </div>
             </div>
@@ -51,4 +53,5 @@
         }
 
     </div>
+    }
 </div>

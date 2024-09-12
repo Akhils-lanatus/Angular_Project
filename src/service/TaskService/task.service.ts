@@ -29,6 +29,17 @@ export class TaskService {
       )
       .pipe(tap(() => this.isLoadingSubject.next(false)));
   }
+  updateTask(data: ITask): Observable<ITaskSuccessResponse> {
+    this.isLoadingSubject.next(true);
+    console.log(data);
+
+    return this.httpClient
+      .patch<ITaskSuccessResponse>(
+        'http://localhost:3000/api/v1/task/update-task/' + data._id,
+        data
+      )
+      .pipe(tap(() => this.isLoadingSubject.next(false)));
+  }
   deleteTask(id: string) {
     this.isLoadingSubject.next(true);
 

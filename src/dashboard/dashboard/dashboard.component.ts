@@ -4,7 +4,6 @@ import { ITask, ITaskSuccessResponse } from '../../Models/global';
 import { TaskService } from '../../service/TaskService/task.service';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { CustomResponseAlert } from '../../shared/CustomAlert/custom-alert.component';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,6 +21,14 @@ export class DashboardComponent implements OnInit {
       (loading) => (this.isLoading = loading)
     );
   }
+  updateDataValue: ITask = {
+    title: '',
+    assignedTo: '',
+    createdAt: new Date(),
+    description: '',
+    priority: 'Low',
+    status: 'Open',
+  };
 
   shouldRenderAlert: boolean = false;
   shouldRenderCreateTask: boolean = false;
@@ -62,6 +69,11 @@ export class DashboardComponent implements OnInit {
         });
       }
     }
+  }
+
+  updateTask(data: ITask) {
+    this.shouldRenderCreateTask = true;
+    this.updateDataValue = data;
   }
   deleteAllTasks() {
     //TODO: delete all tasks same like deleteTask , only mongoose method changes
