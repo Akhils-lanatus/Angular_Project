@@ -3,19 +3,29 @@
     [alertMessage]="successResponseMessage"></app-custom-response-alert>
 }
 <div class="dashboard-container">
+    @if(shouldRenderCreateTask){
+    <div class=" d-flex justify-content-end">
+        <button class="btn btn-outline-danger" (click)="hideCreateTask()">Cancel</button>
+    </div>
+    }
     <div class="add-ask">
         @if (shouldRenderCreateTask) {
         <app-create-task (onCloseBtnClick)="closeAddTask($event)"></app-create-task>
         }@else {
-        <button class="btn btn-primary" (click)="openAddTask()">Add Task</button>
+        <button class="btn btn-primary" [disabled]="isLoading" (click)="openAddTask()">Add Task</button>
         }
+        @if(tasks.length && !shouldRenderCreateTask){
+        <button class="btn btn-danger" (click)="deleteAllTasks()">Delete all Tasks</button>
+        }
+
     </div>
     <div class="row row-cols-1 row-cols-md-3 g-4 mx-2 pb-4">
-        @for (item of taskList; track $index) {
+        @for (item of tasks; track $index) {
         <div class="col">
             <div class="card">
 
                 <div class="card-body">
+
                     <h5 class="card-title"> {{item.title}} </h5>
                     <p class="card-text">
                         <strong>Assigned to -</strong> {{item.assignedTo}}
@@ -30,10 +40,11 @@
                         <strong>Description -</strong>{{item.description}}
                     </p>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer d-flex justify-content-between align-content-center">
                     <p class="card-text">
                         <strong>Created At -</strong>{{item.createdAt|date:'shortDate'}}
                     </p>
+                    <button (click)="deleteTask(item._id)" class="btn btn-danger btn-sm">🗑️</button>
                 </div>
             </div>
         </div>

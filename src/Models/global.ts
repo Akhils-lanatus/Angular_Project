@@ -5,9 +5,10 @@ export interface ITask {
   createdAt: Date;
   priority: 'Low' | 'Medium' | 'High' | 'Critical';
   status: 'Open' | 'Started' | 'In Progress';
+  _id?: string;
 }
 export interface ITaskSuccessResponse {
   success: boolean;
-  response: ITask;
-  message: string;
+  response: ITask | ITask[];
+  message?: string;
 }

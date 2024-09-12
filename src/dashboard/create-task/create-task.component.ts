@@ -6,9 +6,9 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ITask, ITaskSuccessResponse } from '../../Models/global';
+import { ITaskSuccessResponse } from '../../Models/global';
 import { FormErrorService } from '../../service/FormError/form-error.service';
-import { HttpClient } from '@angular/common/http';
+import { TaskService } from '../../service/TaskService/task.service';
 @Component({
   selector: 'app-create-task',
   standalone: true,
@@ -20,7 +20,7 @@ export class CreateTaskComponent {
   @Output() onCloseBtnClick: EventEmitter<ITaskSuccessResponse> =
     new EventEmitter<ITaskSuccessResponse>();
   errorService: FormErrorService = inject(FormErrorService);
-  constructor(private httpClient: HttpClient) {}
+  taskService: TaskService = inject(TaskService);
 
   taskForm: FormGroup = new FormGroup({
     title: new FormControl('', [Validators.required, Validators.maxLength(20)]),
@@ -30,6 +30,7 @@ export class CreateTaskComponent {
     priority: new FormControl('Low'),
     status: new FormControl('Open'),
   });
+
   shouldShowError(controlName: string): boolean {
     const control = this.taskForm.get(controlName) as FormControl;
     return this.errorService.shouldShowError(control);
@@ -39,16 +40,12 @@ export class CreateTaskComponent {
     const control = this.taskForm.get(controlName) as FormControl;
     return this.errorService.getError(control, controlLabel);
   }
+
   handleSubmit() {
-    this.httpClient
-      .post<ITaskSuccessResponse>(
-        'http://localhost:3000/api/v1/task/post-task',
-        this.taskForm.value
-      )
-      .subscribe({
-        next: (res: ITaskSuccessResponse) => {
-          this.onCloseBtnClick.emit(res);
-        },
-      });
+    this.taskService.postTask(this.taskForm.value).subscribe({
+      next: (res: ITaskSuccessResponse) => {
+        this.onCloseBtnClick.emit(res);
+      },
+    });
   }
 }

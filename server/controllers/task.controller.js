@@ -29,3 +29,37 @@ export const postTaskController = async (req, res) => {
     });
   }
 };
+export const getTaskController = async (req, res) => {
+  try {
+    const response = await TaskModel.find(
+      {},
+      {
+        updatedAt: 0,
+        __v: 0,
+      }
+    );
+
+    return res.status(200).json({
+      success: true,
+      response,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const deleteTaskController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const response = await TaskModel.findByIdAndDelete(id);
+    const message = `${
+      response?.title ? response.title : "Title"
+    } deleted successfully`;
+
+    return res.status(200).json({
+      success: true,
+      message,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
