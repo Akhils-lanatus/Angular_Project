@@ -1,7 +1,8 @@
 <nav class="nav-container">
     <ul>
-        <li>Dashboard</li>
-        <li>Details</li>
-        <li>Login</li>
+        <li [routerLink]="['']">Home</li>
+        <li [routerLink]="['dashboard']">Dashboard</li>
+        <li [routerLink]="'/auth/login'">Login</li>
+        <li [routerLink]="'/auth/signup'">Signup</li>
     </ul>
 </nav>

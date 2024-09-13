@@ -1,0 +1,44 @@
+<div class="offcanvas show offcanvas-end" style="background-color: rgb(223, 209, 209);" tabindex="-1"
+    id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h2 id="offcanvasRightLabel">
+            {{selectedTask.title}}
+        </h2>
+        <button type="button" (click)="onClose()" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+            aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <h3>Description</h3>
+        <p>
+            {{selectedTask.description}}
+        </p>
+
+        <div class="task-body">
+            <div>
+                <strong>Assigned To: </strong>
+                <small>
+                    {{selectedTask.assignedTo}}
+                </small>
+            </div>
+            <div>
+                <strong>Created At: </strong>
+                <small>
+                    {{selectedTask.taskCreatedAT|date:"mediumDate"}}
+                </small>
+            </div>
+            <div>
+                <strong>Priority: </strong>
+                <small>
+                    {{selectedTask.priority}}
+                </small>
+            </div>
+            <div>
+                <strong>Status: </strong>
+                <small>
+                    {{selectedTask.status}}
+                </small>
+
+            </div>
+        </div>
+    </div>
+</div>

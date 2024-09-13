@@ -1,0 +1,52 @@
+<form [formGroup]="signupForm" (submit)="handleSubmit()">
+    <h1 class="text-center my-3">Register</h1>
+    <div class="form-outline mb-4">
+        <label class="form-label" for="form2Example1">Email address</label>
+        <input formControlName="email" type="email" [class]="{
+                'is-invalid':shouldShowError('email'),
+                'form-control':true
+            }" />
+        @if (shouldShowError('email')) {
+        <div>
+            <small class="text-danger">
+                {{ getError("email", "Email") }}
+            </small>
+        </div>
+        }
+    </div>
+    <div class="form-outline mb-4">
+        <label class="form-label" for="form2Example2">Password</label>
+        <input formControlName="password" type=" password" [class]="{
+                'is-invalid':shouldShowError('password'),
+                'form-control':true
+            }" />
+        @if (shouldShowError('password')) {
+        <div>
+            <small class="text-danger">
+                {{ getError("password", "Password") }}
+            </small>
+        </div>
+        }
+    </div>
+    <div class="form-outline mb-4">
+        <label class="form-label" for="form2Example2">Password</label>
+        <input formControlName="confirmPassword" type=" password" [class]="{
+                    'is-invalid':shouldShowError('confirmPassword') || (signupForm.hasError('passwordMatchError') && (signupForm.controls['confirmPassword'].touched||signupForm.controls['confirmPassword'].dirty)),
+                    'form-control':true
+                }" />
+        @if (shouldShowError('confirmPassword')) {
+        <div>
+            <small class="text-danger">
+                {{ getError("confirmPassword", "Confirm Password") }}
+            </small>
+        </div>
+        }
+        <div
+            *ngIf="signupForm.hasError('passwordMatchError') && (signupForm.controls['confirmPassword'].touched||signupForm.controls['confirmPassword'].dirty)">
+            <small class="text-danger">
+                Password don't match
+            </small>
+        </div>
+    </div>
+    <button type="submit" [disabled]="signupForm.invalid" class="btn btn-primary btn-block mb-4">Sign Up</button>
+</form>

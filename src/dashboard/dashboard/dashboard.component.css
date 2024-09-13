@@ -6,3 +6,15 @@
   display: flex;
   justify-content: space-evenly;
 }
+.error-text {
+  background-color: red;
+  padding: 1rem;
+  border-radius: 0.4rem;
+  color: white;
+  text-align: center;
+  width: 30%;
+}
+.errorMessageContainer {
+  display: flex;
+  justify-content: end;
+}

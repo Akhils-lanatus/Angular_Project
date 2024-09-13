@@ -1,14 +1,23 @@
-import { Component, DoCheck, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CreateTaskComponent } from '../create-task/create-task.component';
 import { ITask, ITaskSuccessResponse } from '../../Models/global';
 import { TaskService } from '../../service/TaskService/task.service';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { CustomResponseAlert } from '../../shared/CustomAlert/custom-alert.component';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ApiErrorService } from '../../service/ApiError/api-error.service';
+import { ViewSelectedTaskComponent } from '../view-selected-task/view-selected-task.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CreateTaskComponent, DatePipe, CustomResponseAlert, AsyncPipe],
+  imports: [
+    CreateTaskComponent,
+    DatePipe,
+    CustomResponseAlert,
+    AsyncPipe,
+    ViewSelectedTaskComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
@@ -16,8 +25,23 @@ export class DashboardComponent implements OnInit {
   tasks: ITask[] = [];
   isLoading: boolean = false;
   isUpdateState: boolean = false;
+  isViewState: boolean = false;
+  errorMessage: string = '';
+  selectedTask: ITask = {
+    title: '',
+    assignedTo: '',
+    taskCreatedAT: new Date(),
+    description: '',
+    priority: 'Low',
+    status: 'Open',
+  };
   ngOnInit(): void {
-    this.taskService.fetchAllTasks().subscribe((x) => (this.tasks = x));
+    this.taskService.fetchAllTasks().subscribe({
+      next: (x) => (this.tasks = x),
+      error: (error: HttpErrorResponse) => {
+        this.errorFunc(error);
+      },
+    });
     this.taskService.isLoading$.subscribe(
       (loading) => (this.isLoading = loading)
     );
@@ -35,7 +59,10 @@ export class DashboardComponent implements OnInit {
   shouldRenderCreateTask: boolean = false;
   successResponseMessage: string = '';
 
-  constructor(private taskService: TaskService) {}
+  constructor(
+    private taskService: TaskService,
+    private errorMessageService: ApiErrorService
+  ) {}
 
   //OPEN TASK FORM
   openAddTask() {
@@ -48,7 +75,28 @@ export class DashboardComponent implements OnInit {
     this.shouldRenderCreateTask = false;
     this.shouldRenderAlert = true;
     this.isUpdateState = false;
-    this.taskService.fetchAllTasks().subscribe((x) => (this.tasks = x));
+    this.taskService.fetchAllTasks().subscribe({
+      next: (x) => (this.tasks = x),
+      error: (error: HttpErrorResponse) => {
+        this.errorMessage = this.errorMessageService.getErrorMessage(error);
+        this.isLoading = false;
+        setTimeout(() => {
+          this.errorMessage = '';
+        }, 3000);
+      },
+    });
+  }
+
+  closeViewModal() {
+    this.isViewState = false;
+    this.selectedTask = {
+      title: '',
+      assignedTo: '',
+      taskCreatedAT: new Date(),
+      description: '',
+      priority: 'Low',
+      status: 'Open',
+    };
   }
 
   hideResponseAlert() {
@@ -71,6 +119,9 @@ export class DashboardComponent implements OnInit {
                 .subscribe((x) => (this.tasks = x));
             }
           },
+          error: (error: HttpErrorResponse) => {
+            this.errorFunc(error);
+          },
         });
       }
     }
@@ -84,11 +135,17 @@ export class DashboardComponent implements OnInit {
         next: (res: ITaskSuccessResponse) => {
           this.closeAddTask(res);
         },
+        error: (error: HttpErrorResponse) => {
+          this.errorFunc(error);
+        },
       });
     } else {
       this.taskService.postTask(payload).subscribe({
         next: (res: ITaskSuccessResponse) => {
           this.closeAddTask(res);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.errorFunc(error);
         },
       });
     }
@@ -98,6 +155,27 @@ export class DashboardComponent implements OnInit {
     this.shouldRenderCreateTask = true;
     this.updateDataValue = data;
     this.isUpdateState = true;
+  }
+
+  fetchSelectedTask(id: string | undefined) {
+    if (id) {
+      this.taskService.fetchSelectedTask(id).subscribe({
+        next: (data) => {
+          (this.selectedTask = data), (this.isViewState = true);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.errorFunc(error);
+        },
+      });
+    }
+  }
+
+  errorFunc(error: HttpErrorResponse) {
+    this.errorMessage = this.errorMessageService.getErrorMessage(error);
+    this.isLoading = false;
+    setTimeout(() => {
+      this.errorMessage = '';
+    }, 3000);
   }
   deleteAllTasks() {
     //TODO: delete all tasks same like deleteTask , only mongoose method changes

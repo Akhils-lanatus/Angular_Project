@@ -1,7 +1,15 @@
 import { Injectable } from '@angular/core';
 import { ITask, ITaskSuccessResponse } from '../../Models/global';
-import { BehaviorSubject, map, Observable, Subject, tap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import {
+  BehaviorSubject,
+  catchError,
+  map,
+  Observable,
+  Subject,
+  tap,
+  throwError,
+} from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +25,10 @@ export class TaskService {
       .get<{ response: ITask[] }>('http://localhost:3000/api/v1/task/get-task')
       .pipe(
         map((res) => res.response),
+        catchError((err: HttpErrorResponse) => {
+          console.log(err);
+          return throwError(() => err);
+        }),
         tap(() => this.isLoadingSubject.next(false))
       );
   }
@@ -47,5 +59,16 @@ export class TaskService {
         `http://localhost:3000/api/v1/task/delete-post/${id}`
       )
       .pipe(tap(() => this.isLoadingSubject.next(false)));
+  }
+  fetchSelectedTask(id: string) {
+    this.isLoadingSubject.next(true);
+    return this.httpClient
+      .get<{ response: ITask }>(
+        'http://localhost:3000/api/v1/task/get-selected-task/' + id
+      )
+      .pipe(
+        map((res) => res.response),
+        tap(() => this.isLoadingSubject.next(false))
+      );
   }
 }

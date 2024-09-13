@@ -30,6 +30,7 @@ export class CreateTaskComponent implements OnInit, OnDestroy {
   taskService: TaskService = inject(TaskService);
   @Input() updateDataValue!: ITask;
   @Input() isUpdateState: boolean = false;
+  @Input() isLoading: boolean = false;
 
   taskForm: FormGroup = new FormGroup({
     title: new FormControl('', [Validators.required, Validators.maxLength(20)]),
@@ -45,8 +46,6 @@ export class CreateTaskComponent implements OnInit, OnDestroy {
     return this.errorService.shouldShowError(control);
   }
 
-  isLoading: boolean = false;
-
   ngOnInit(): void {
     if (this.isUpdateState) {
       this.taskForm.patchValue(this.updateDataValue);
@@ -56,9 +55,6 @@ export class CreateTaskComponent implements OnInit, OnDestroy {
           formatDate(this.updateDataValue.taskCreatedAT, 'yyyy-MM-dd', 'en')
         );
     }
-    this.taskService.isLoading$.subscribe(
-      (loading) => (this.isLoading = loading)
-    );
   }
 
   getError(controlName: string, controlLabel?: string): string {

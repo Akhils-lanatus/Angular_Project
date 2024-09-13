@@ -1,0 +1,6 @@
+.task-body {
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  font-size: large;
+}

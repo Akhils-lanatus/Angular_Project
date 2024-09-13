@@ -10,19 +10,13 @@ export class FormErrorService {
   }
 
   getError(control: FormControl, controlLabel?: string): string {
-    let errors = '';
-    errors = this.getErrorMessage(control, controlLabel);
-    return errors;
-  }
-
-  private getErrorMessage(control: FormControl, controlLabel?: string): string {
     if (control.errors) {
       if (control.errors?.['required']) {
         return `${controlLabel} is required`;
       } else if (control.errors?.['minlength']) {
         return `Minimum length for ${controlLabel} is ${control.errors?.['minlength'].requiredLength}`;
       } else if (control.errors?.['maxlength']) {
-        return `Minimum length for ${controlLabel} is ${control.errors?.['maxlength'].requiredLength}`;
+        return `Maximum length for ${controlLabel} is ${control.errors?.['maxlength'].requiredLength}`;
       } else if (control.errors?.['email']) {
         return 'Invalid email format';
       }
