@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DoCheck, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormErrorService } from '../../service/FormError/form-error.service';
 import {
   FormControl,
@@ -9,6 +9,8 @@ import {
 import { doPasswordMatch } from '../../shared/Validators/passwordMatch.validator';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '../../service/AuthService/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-signup',
@@ -17,20 +19,32 @@ import { Router } from '@angular/router';
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css',
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit, OnDestroy {
   formErrorService: FormErrorService = inject(FormErrorService);
   router: Router = inject(Router);
+  authService: AuthService = inject(AuthService);
   signupForm!: FormGroup;
+  isLoading: boolean = false;
+
   ngOnInit() {
     this.signupForm = new FormGroup(
       {
-        email: new FormControl('', [Validators.required, Validators.email]),
-        password: new FormControl('', [
+        name: new FormControl('Akhil', [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(12),
+          Validators.nullValidator,
+        ]),
+        email: new FormControl('akhilshah1902@gmail.com', [
+          Validators.required,
+          Validators.email,
+        ]),
+        password: new FormControl('1911', [
           Validators.required,
           Validators.minLength(4),
           Validators.maxLength(12),
         ]),
-        confirmPassword: new FormControl('', [Validators.required]),
+        confirm_password: new FormControl('1911', [Validators.required]),
       },
       { validators: doPasswordMatch }
     );
@@ -50,7 +64,7 @@ export class SignupComponent implements OnInit {
   //   if (
   //     (this.signupForm.get('email')?.value as string)?.trim() === '' ||
   //     (this.signupForm.get('password')?.value as string)?.trim() === '' ||
-  //     (this.signupForm.get('confirmPassword')?.value as string)?.trim() === ''
+  //     (this.signupForm.get('confirm_password')?.value as string)?.trim() === ''
   //   ) {
   //     return window.confirm(
   //       'Want to continue without completing registration 😢😢'
@@ -59,9 +73,21 @@ export class SignupComponent implements OnInit {
   //     return true;
   //   }
   // }
-
+  private sub!: Subscription;
   handleSubmit() {
-    this.signupForm.reset();
-    this.router.navigate(['auth', 'login']);
+    this.isLoading = true;
+    this.sub = this.authService.registerUser(this.signupForm.value).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.router.navigate(['auth', 'login']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.log(err);
+      },
+    });
+  }
+  ngOnDestroy() {
+    this.sub.unsubscribe();
   }
 }

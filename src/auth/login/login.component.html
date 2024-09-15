@@ -28,5 +28,6 @@
         </div>
         }
     </div>
-    <button type="submit" [disabled]="loginForm.invalid" class="btn btn-primary btn-block mb-4">Sign in</button>
+    <button type="submit" [disabled]="loginForm.invalid||isLoading" class="btn btn-primary btn-block mb-4">Sign
+        in</button>
 </form>

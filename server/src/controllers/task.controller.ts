@@ -47,10 +47,10 @@ export const getTaskController = async (req: Request, res: Response) => {
       response,
     });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({
+    const message = errorHandler(error) || 'Internal server error';
+    return res.status(400).json({
       success: false,
-      message: 'Internal server error',
+      message,
     });
   }
 };
@@ -67,10 +67,10 @@ export const deleteTaskController = async (req: Request, res: Response) => {
       message,
     });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({
+    const message = errorHandler(error) || 'Internal server error';
+    return res.status(400).json({
       success: false,
-      message: 'Internal server error',
+      message,
     });
   }
 };
@@ -122,10 +122,10 @@ export const getSelectedTaskController = async (
       response,
     });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({
+    const message = errorHandler(error) || 'Internal server error';
+    return res.status(400).json({
       success: false,
-      message: 'Internal server error',
+      message,
     });
   }
 };

@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ITask, ITaskSuccessResponse } from '../../Models/global';
 import {
   BehaviorSubject,
   catchError,
   map,
   Observable,
-  Subject,
   tap,
   throwError,
 } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +17,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 export class TaskService {
   constructor(private httpClient: HttpClient) {}
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
+  private toastr = inject(ToastrService);
   isLoading$ = this.isLoadingSubject.asObservable();
 
   fetchAllTasks(): Observable<ITask[]> {
@@ -24,9 +25,11 @@ export class TaskService {
     return this.httpClient
       .get<{ response: ITask[] }>('http://localhost:3000/api/v1/task/get-task')
       .pipe(
-        map((res) => res.response),
+        map((res) => {
+          return res.response;
+        }),
         catchError((err: HttpErrorResponse) => {
-          console.log(err);
+          this.toastr.error(err.error.message, 'Error');
           return throwError(() => err);
         }),
         tap(() => this.isLoadingSubject.next(false))

@@ -1,6 +1,20 @@
 <form [formGroup]="signupForm" (submit)="handleSubmit()">
     <h1 class="text-center my-3">Register</h1>
     <div class="form-outline mb-4">
+        <label class="form-label" for="form2Example1">Name</label>
+        <input formControlName="name" type="text" [class]="{
+                'is-invalid':shouldShowError('name'),
+                'form-control':true
+            }" />
+        @if (shouldShowError('name')) {
+        <div>
+            <small class="text-danger">
+                {{ getError("name", "Name") }}
+            </small>
+        </div>
+        }
+    </div>
+    <div class="form-outline mb-4">
         <label class="form-label" for="form2Example1">Email address</label>
         <input formControlName="email" type="email" [class]="{
                 'is-invalid':shouldShowError('email'),
@@ -30,23 +44,24 @@
     </div>
     <div class="form-outline mb-4">
         <label class="form-label" for="form2Example2">Password</label>
-        <input formControlName="confirmPassword" type=" password" [class]="{
-                    'is-invalid':shouldShowError('confirmPassword') || (signupForm.hasError('passwordMatchError') && (signupForm.controls['confirmPassword'].touched||signupForm.controls['confirmPassword'].dirty)),
+        <input formControlName="confirm_password" type=" password" [class]="{
+                    'is-invalid':shouldShowError('confirm_password') || (signupForm.hasError('passwordMatchError') && (signupForm.controls['confirm_password'].touched||signupForm.controls['confirm_password'].dirty)),
                     'form-control':true
                 }" />
-        @if (shouldShowError('confirmPassword')) {
+        @if (shouldShowError('confirm_password')) {
         <div>
             <small class="text-danger">
-                {{ getError("confirmPassword", "Confirm Password") }}
+                {{ getError("confirm_password", "Confirm Password") }}
             </small>
         </div>
         }
         <div
-            *ngIf="signupForm.hasError('passwordMatchError') && (signupForm.controls['confirmPassword'].touched||signupForm.controls['confirmPassword'].dirty)">
+            *ngIf="signupForm.hasError('passwordMatchError') && (signupForm.controls['confirm_password'].touched||signupForm.controls['confirm_password'].dirty)">
             <small class="text-danger">
                 Password don't match
             </small>
         </div>
     </div>
-    <button type="submit" [disabled]="signupForm.invalid" class="btn btn-primary btn-block mb-4">Sign Up</button>
+    <button type="submit" [disabled]="signupForm.invalid || isLoading" class="btn btn-primary btn-block mb-4">Sign
+        Up</button>
 </form>

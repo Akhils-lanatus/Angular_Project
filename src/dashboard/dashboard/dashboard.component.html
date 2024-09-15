@@ -1,7 +1,3 @@
-@if(shouldRenderAlert){
-<app-custom-response-alert (onHideAlertClick)="hideResponseAlert()" [alertTitle]="'Success'"
-    [alertMessage]="successResponseMessage"></app-custom-response-alert>
-}
 @if(isViewState){
 <app-view-selected-task [selectedTask]="selectedTask" (closeViewModal)="closeViewModal()"></app-view-selected-task>
 }
@@ -11,13 +7,7 @@
         <button class="btn btn-outline-danger" (click)="hideCreateTask()">Cancel</button>
     </div>
     }
-    @if(errorMessage){
-    <div class="errorMessageContainer">
-        <p class="error-text">
-            {{errorMessage}}
-        </p>
-    </div>
-    }
+
     <div class="add-ask">
         @if (shouldRenderCreateTask) {
         <app-create-task [updateDataValue]="updateDataValue" [isUpdateState]="isUpdateState"

@@ -3,10 +3,10 @@ import { CreateTaskComponent } from '../create-task/create-task.component';
 import { ITask, ITaskSuccessResponse } from '../../Models/global';
 import { TaskService } from '../../service/TaskService/task.service';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { CustomResponseAlert } from '../../shared/CustomAlert/custom-alert.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiErrorService } from '../../service/ApiError/api-error.service';
 import { ViewSelectedTaskComponent } from '../view-selected-task/view-selected-task.component';
+import { AuthService } from '../../service/AuthService/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +14,6 @@ import { ViewSelectedTaskComponent } from '../view-selected-task/view-selected-t
   imports: [
     CreateTaskComponent,
     DatePipe,
-    CustomResponseAlert,
     AsyncPipe,
     ViewSelectedTaskComponent,
   ],
@@ -55,13 +54,13 @@ export class DashboardComponent implements OnInit {
     status: 'Open',
   };
 
-  shouldRenderAlert: boolean = false;
   shouldRenderCreateTask: boolean = false;
   successResponseMessage: string = '';
 
   constructor(
     private taskService: TaskService,
-    private errorMessageService: ApiErrorService
+    private errorMessageService: ApiErrorService,
+    private authService: AuthService
   ) {}
 
   //OPEN TASK FORM
@@ -73,7 +72,6 @@ export class DashboardComponent implements OnInit {
   closeAddTask(data: ITaskSuccessResponse) {
     this.successResponseMessage = data.message || '';
     this.shouldRenderCreateTask = false;
-    this.shouldRenderAlert = true;
     this.isUpdateState = false;
     this.taskService.fetchAllTasks().subscribe({
       next: (x) => (this.tasks = x),
@@ -99,9 +97,6 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  hideResponseAlert() {
-    this.shouldRenderAlert = false;
-  }
   hideCreateTask() {
     this.shouldRenderCreateTask = false;
   }
@@ -113,7 +108,6 @@ export class DashboardComponent implements OnInit {
           next: (x) => {
             if (x.success) {
               this.successResponseMessage = x.message || '';
-              this.shouldRenderAlert = true;
               this.taskService
                 .fetchAllTasks()
                 .subscribe((x) => (this.tasks = x));

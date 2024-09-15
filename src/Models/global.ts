@@ -12,3 +12,22 @@ export interface ITaskSuccessResponse {
   response: ITask | ITask[];
   message?: string;
 }
+export interface UserRegisterData {
+  name: string;
+  email: string;
+  password: string;
+  confirm_password: string;
+}
+
+export interface ApiAuthResponse {
+  success: boolean;
+  message?: string;
+  response?: {
+    _id: string;
+    name: string;
+    email: string;
+    role: 'user' | 'admin';
+  };
+  _token?: string;
+  _expiresIn?: number;
+}
