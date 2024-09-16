@@ -82,11 +82,6 @@ export const userLoginUserController = async (req: Request, res: Response) => {
       { ...payload, exp: tokenExp },
       process.env.JWT_TOKEN
     );
-    res.cookie('authToken', token, {
-      httpOnly: true,
-      secure: true,
-      maxAge: tokenExp,
-    });
 
     return res.status(200).json({
       success: true,

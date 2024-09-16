@@ -45,7 +45,10 @@ export const postTaskController = async (req: Request, res: Response) => {
 
 export const getTaskController = async (req: Request, res: Response) => {
   try {
-    const cookieToken = req.cookies.authToken;
+    const cookieToken = req.headers.authorization?.split(
+      'Bearer '
+    )[1] as string;
+    console.log(cookieToken);
     const verifiedToken = jwt.verify(
       cookieToken,
       process.env.JWT_TOKEN as string
