@@ -15,7 +15,7 @@
         }@else {
         <button class="btn btn-primary" [disabled]="isLoading||isViewState" (click)="openAddTask()">Add Task</button>
         }
-        @if(tasks.length && !shouldRenderCreateTask){
+        @if(tasks && tasks.length && !shouldRenderCreateTask){
         <button class="btn btn-danger" [disabled]="isLoading||isViewState" (click)="deleteAllTasks()">Delete all
             Tasks</button>
         }

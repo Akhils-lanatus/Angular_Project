@@ -23,7 +23,10 @@ export class TaskService {
   fetchAllTasks(): Observable<ITask[]> {
     this.isLoadingSubject.next(true);
     return this.httpClient
-      .get<{ response: ITask[] }>('http://localhost:3000/api/v1/task/get-task')
+      .get<{ response: ITask[] }>(
+        'http://localhost:3000/api/v1/task/get-task',
+        { withCredentials: true }
+      )
       .pipe(
         map((res) => {
           return res.response;

@@ -21,7 +21,7 @@ import { AuthService } from '../../service/AuthService/auth.service';
   styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent implements OnInit {
-  tasks: ITask[] = [];
+  tasks: ITask[] | null = [];
   isLoading: boolean = false;
   isUpdateState: boolean = false;
   isViewState: boolean = false;
@@ -136,6 +136,8 @@ export class DashboardComponent implements OnInit {
     } else {
       this.taskService.postTask(payload).subscribe({
         next: (res: ITaskSuccessResponse) => {
+          console.log(res);
+
           this.closeAddTask(res);
         },
         error: (error: HttpErrorResponse) => {

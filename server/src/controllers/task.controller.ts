@@ -1,11 +1,21 @@
 import { Request, Response } from 'express';
 import { errorHandler } from '../utils/errorHandler.js';
 import { TaskModel } from '../models/task.model.js';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import mongoose from 'mongoose';
+import { UserModel } from '../models/useraAuth.model.js';
 
 export const postTaskController = async (req: Request, res: Response) => {
   try {
-    const { title, description, assignedTo, taskCreatedAT, priority, status } =
-      req.body;
+    const {
+      title,
+      description,
+      assignedTo,
+      taskCreatedAT,
+      priority,
+      status,
+      email,
+    } = req.body;
 
     const response = await TaskModel.create({
       title,
@@ -14,6 +24,7 @@ export const postTaskController = async (req: Request, res: Response) => {
       assignedTo,
       priority,
       status,
+      email,
     });
 
     if (response) {
@@ -34,17 +45,38 @@ export const postTaskController = async (req: Request, res: Response) => {
 
 export const getTaskController = async (req: Request, res: Response) => {
   try {
-    const response = await TaskModel.find(
-      {},
+    const cookieToken = req.cookies.authToken;
+    const verifiedToken = jwt.verify(
+      cookieToken,
+      process.env.JWT_TOKEN as string
+    ) as JwtPayload;
+
+    const response = await TaskModel.aggregate([
       {
-        updatedAt: 0,
-        __v: 0,
-      }
-    );
+        $match: {
+          email: verifiedToken.email,
+        },
+      },
+      {
+        $lookup: {
+          from: 'tasks',
+          localField: 'email',
+          foreignField: 'email',
+          as: 'jd',
+        },
+      },
+      {
+        $addFields: {
+          joinedData: { $arrayElemAt: ['$jd', 0] },
+        },
+      },
+    ]);
+
+    const tasks = response[0]?.jd || null;
 
     return res.status(200).json({
       success: true,
-      response,
+      response: tasks,
     });
   } catch (error) {
     const message = errorHandler(error) || 'Internal server error';

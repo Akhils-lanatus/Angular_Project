@@ -63,7 +63,9 @@ export class CreateTaskComponent implements OnInit, OnDestroy {
   }
 
   handleSubmit() {
-    const payload = { ...this.taskForm.value };
+    const data = JSON.parse(localStorage.getItem('authToken'));
+    const email = data.response.email;
+    const payload = { ...this.taskForm.value, email };
     this.handleFormSubmit.emit(payload);
   }
 

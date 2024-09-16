@@ -9,7 +9,6 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../service/AuthService/auth.service';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +17,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent implements OnDestroy {
+export class LoginComponent {
   formErrorService: FormErrorService = inject(FormErrorService);
   http: HttpClient = inject(HttpClient);
   authService: AuthService = inject(AuthService);
@@ -44,11 +43,10 @@ export class LoginComponent implements OnDestroy {
     const control = this.loginForm.get(controlName) as FormControl;
     return this.formErrorService.shouldShowError(control);
   }
-  private sub!: Subscription;
 
   handleSubmit() {
     this.isLoading = true;
-    this.sub = this.authService.loginUser(this.loginForm.value).subscribe({
+    this.authService.loginUser(this.loginForm.value).subscribe({
       next: () => {
         this.isLoading = false;
         this.router.navigate(['dashboard']);
@@ -58,9 +56,5 @@ export class LoginComponent implements OnDestroy {
         console.log(err);
       },
     });
-  }
-
-  ngOnDestroy() {
-    this.sub.unsubscribe();
   }
 }

@@ -10,7 +10,6 @@ import { doPasswordMatch } from '../../shared/Validators/passwordMatch.validator
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../service/AuthService/auth.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-signup',
@@ -19,7 +18,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css',
 })
-export class SignupComponent implements OnInit, OnDestroy {
+export class SignupComponent implements OnInit {
   formErrorService: FormErrorService = inject(FormErrorService);
   router: Router = inject(Router);
   authService: AuthService = inject(AuthService);
@@ -73,10 +72,9 @@ export class SignupComponent implements OnInit, OnDestroy {
   //     return true;
   //   }
   // }
-  private sub!: Subscription;
   handleSubmit() {
     this.isLoading = true;
-    this.sub = this.authService.registerUser(this.signupForm.value).subscribe({
+    this.authService.registerUser(this.signupForm.value).subscribe({
       next: () => {
         this.isLoading = false;
         this.router.navigate(['auth', 'login']);
@@ -86,8 +84,5 @@ export class SignupComponent implements OnInit, OnDestroy {
         console.log(err);
       },
     });
-  }
-  ngOnDestroy() {
-    this.sub.unsubscribe();
   }
 }

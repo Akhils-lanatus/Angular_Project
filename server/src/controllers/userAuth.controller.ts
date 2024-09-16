@@ -51,6 +51,7 @@ export const userRegisterController = async (req: Request, res: Response) => {
     });
   }
 };
+
 export const userLoginUserController = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;

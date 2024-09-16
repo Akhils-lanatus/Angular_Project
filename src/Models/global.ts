@@ -6,6 +6,7 @@ export interface ITask {
   priority: 'Low' | 'Medium' | 'High' | 'Critical';
   status: 'Open' | 'Started' | 'In Progress';
   _id?: string;
+  email?: string;
 }
 export interface ITaskSuccessResponse {
   success: boolean;
