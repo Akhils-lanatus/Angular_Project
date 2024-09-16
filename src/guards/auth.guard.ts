@@ -12,3 +12,13 @@ export const authGuard: CanActivateFn = (route, state) => {
     })
   );
 };
+
+export const publicAuth: CanActivateFn = (route, state) => {
+  const authService: AuthService = inject(AuthService);
+  const router: Router = inject(Router);
+  return authService.user.pipe(
+    map((user) => {
+      return user ? router.createUrlTree(['dashboard']) : true;
+    })
+  );
+};
